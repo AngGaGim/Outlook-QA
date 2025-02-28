@@ -1,5 +1,6 @@
 test/
 .venv
-
-.idea
+test/failed
+test/success
+.idea/
 __pycache__
