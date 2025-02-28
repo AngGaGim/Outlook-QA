@@ -1,6 +1,7 @@
 test/
 .venv
-test/failed
-test/success
+test/failed/*.py
+*.eml
+test/success/
 .idea/
 __pycache__
