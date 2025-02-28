@@ -3,5 +3,6 @@ test/
 test/failed/*.py
 *.eml
 test/success/
-.idea/
+.idea
+.DS_Store
 __pycache__
