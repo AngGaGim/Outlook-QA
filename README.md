@@ -1,82 +1,82 @@
-# Outlook-QA：提取 Outlook 邮件内容并生成 QA 语料库
+# Outlook-QA: Extract Outlook Email Content and Generate QA Corpus
 
-本项目通过 Microsoft Graph API 和 OAuth 获取 Outlook 邮箱的邮件内容，并将其处理为适用于模型训练的 QA 语料库。
-
----
-
-## 项目概览
-
-- **目标**：从 Outlook 邮箱提取邮件，清洗数据，生成 QA 数据集。
-- **方法**：使用 Microsoft Graph API 和 OAuth 协议访问邮箱。
-- **输出**：以 CSV 格式保存的结构化 QA 语料库。
+This project retrieves email content from an Outlook mailbox using the Microsoft Graph API and OAuth, processes it, and generates a QA corpus suitable for model training.
 
 ---
 
-## 前置条件
+## Project Overview
 
-- 拥有 Microsoft 账号及 Outlook 邮箱权限。
-- 在 Azure 门户注册应用程序以获取 OAuth token。
-- 配置 Python 环境，安装所需库（`msgraph-sdk`、`requests` 等）。
-
----
-
-## 操作步骤
-
-### 1. 获取 Token
-
-Microsoft 已停止支持直接使用账号密码进行 IMAP 协议连接，需通过 OAuth 获取 token。
-
-#### 方法 1：委托式获取 Token（手动）
-1. 访问 [Microsoft Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer)。
-2. 登录并生成具有 `Mail.ReadWrite` 权限的 token。
-
-#### 方法 2：应用程序获取 Token（程序化）
-1. 在 Azure 门户注册一个应用程序。
-2. 为应用授予 `Mail.ReadWrite` 权限。
-3. 使用客户端凭据流获取 token。
+- **Objective**: Extract emails from an Outlook mailbox, clean the data, and generate a QA dataset.
+- **Approach**: Utilize Microsoft Graph API and OAuth protocol to access the mailbox.
+- **Output**: A structured QA corpus saved in CSV format.
 
 ---
 
-### 2. 邮件操作
+## Prerequisites
 
-#### 方法 1：Microsoft Graph API
-- **文档**：参考 [Microsoft Graph API 文档](https://docs.microsoft.com/en-us/graph/api/resources/mail-api-overview)。
-- **测试**：通过 Graph Explorer 测试 API。
-- **示例**：使用 `/me/messages` 端点获取邮件。
-
-#### 方法 2：Microsoft Graph SDK
-- 使用 Python SDK（`msgraph-sdk`）。
-- 示例代码：参考 [msgraph-training-python](https://github.com/microsoftgraph/msgraph-training-python)。
+- A Microsoft account with Outlook mailbox permissions.
+- An application registered in the Azure Portal to obtain an OAuth token.
+- A configured Python environment with required libraries installed (`msgraph-sdk`, `requests`, etc.).
 
 ---
 
-### 3. 数据处理流程
+## Steps
 
-#### 步骤 1：获取并解析邮件
-- 使用 Graph API 获取原始邮件数据。
-- 将响应数据转换为 JSON 格式。
+### 1. Obtain Token
 
-#### 步骤 2：数据过滤
-- **过滤标准**：
-  1. 排除单条会话邮件（无回复）。
-  2. 删除 HTML 中的无关元素（表格、广告插图等）。
-  3. 排除会话数 ≥ 2 且最后一条为转发的邮件。
-  4. 处理并合并类型为转发但不显示原始内容的邮件。
+Microsoft no longer supports direct IMAP connections using account credentials. An OAuth token is required instead.
 
-#### 步骤 3：转换为对话格式
-- 将邮件会话转换为 JSON 对话格式。
-- 使用 LLM 批量提取 QA 对。
-- 保存为 CSV 文件，包含列：`Question`、`Answer`。
+#### Method 1: Delegated Token Acquisition (Manual)
+1. Visit [Microsoft Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer).
+2. Sign in and generate a token with `Mail.ReadWrite` permissions.
 
-#### 步骤 4：去重
-- 对 QA 对进行哈希处理，移除重复项。
+#### Method 2: Application Token Acquisition (Programmatic)
+1. Register an application in the Azure Portal.
+2. Grant the application `Mail.ReadWrite` permissions.
+3. Use the client credentials flow to obtain a token.
 
 ---
 
-## 输出格式
+### 2. Email Operations
 
-- **文件**：`qa_corpus.csv`
-- **结构**：
+#### Method 1: Microsoft Graph API
+- **Documentation**: Refer to [Microsoft Graph API Documentation](https://docs.microsoft.com/en-us/graph/api/resources/mail-api-overview).
+- **Testing**: Test the API using Graph Explorer.
+- **Example**: Use the `/me/messages` endpoint to retrieve emails.
+
+#### Method 2: Microsoft Graph SDK
+- Use the Python SDK (`msgraph-sdk`).
+- Sample Code: Refer to [msgraph-training-python](https://github.com/microsoftgraph/msgraph-training-python).
+
+---
+
+### 3. Data Processing Workflow
+
+#### Step 1: Retrieve and Parse Emails
+- Fetch raw email data using the Graph API.
+- Convert the response data into JSON format.
+
+#### Step 2: Data Filtering
+- **Filtering Criteria**:
+  1. Exclude single-session emails (no replies).
+  2. Remove irrelevant HTML elements (tables, advertisement images, etc.).
+  3. Exclude conversations with ≥ 2 messages where the last message is a forward.
+  4. Process and merge forwarded emails that do not display original content.
+
+#### Step 3: Convert to Conversation Format
+- Transform email threads into a JSON conversation format.
+- Use an LLM to batch-extract QA pairs.
+- Save as a CSV file with columns: `Question`, `Answer`.
+
+#### Step 4: Deduplication
+- Hash QA pairs and remove duplicates.
+
+---
+
+## Output Format
+
+- **File**: `qa_corpus.csv`
+- **Structure**:
   ```csv
   Question,Answer
-  "会议时间是什么时候？","明天中午 2 点。"
+  "When is the meeting scheduled?","Tomorrow at 2 PM."
