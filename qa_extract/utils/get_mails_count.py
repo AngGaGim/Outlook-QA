@@ -15,7 +15,7 @@ def get_mails_count(token,skip):
         data = response.json()
         count = len(data.get("value", []))
         url = data.get("@odata.nextLink")  # 处理分页
-        print(url)
+        print(f"next_page: {url}")
         total_count += count
     print(f"总邮件数: {total_count}")
 
