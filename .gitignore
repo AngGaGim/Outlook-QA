@@ -1,9 +1,8 @@
-test/
+qa_extract
 .venv
-test/failed/*.py
 *.eml
-test/success/
 .idea
 .DS_Store
 __pycache__
-data/
+.ipynb_checkpoints
+outlook-bot
