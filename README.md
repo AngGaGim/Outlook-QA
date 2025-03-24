@@ -80,4 +80,3 @@ Microsoft no longer supports direct IMAP connections using account credentials. 
   ```csv
   Question,Answer
   "When is the meeting scheduled?","Tomorrow at 2 PM."
-  
