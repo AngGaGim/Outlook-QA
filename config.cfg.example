@@ -1,0 +1,9 @@
+[azure]
+# Azure Application (Client) ID
+clientId = <your application client id>
+
+# Azure Client Secret (keep this private)
+clientSecret = <your application client secret>
+
+# Azure Tenant ID (the ID of the Azure AD tenant)
+tenantId = <your azure tenant id>
